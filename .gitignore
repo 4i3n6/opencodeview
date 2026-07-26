@@ -1,0 +1,21 @@
+node_modules/
+web/node_modules/
+.cache/
+web/dist/
+*.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+coverage/
+*.tsbuildinfo
+.omo/
+.playwright-mcp/
+gitleaks-report.json
+# Local-only agent ops — never publish
+AGENTS.md

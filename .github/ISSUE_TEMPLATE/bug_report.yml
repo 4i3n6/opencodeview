@@ -1,0 +1,73 @@
+name: Bug report
+description: Something in OpencodeView behaves incorrectly.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Please keep reports technical and free of secrets, absolute home paths, and personal data.
+
+        If the issue is in **OpenCode itself** (agent runtime, DB writers, upstream schema), prefer filing upstream when you can. OpencodeView only reads local data.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong in one or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps from a clean clone if possible.
+      placeholder: |
+        1. bun src/scan.ts --all
+        2. bun run serve
+        3. GET /api/...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OpencodeView version / commit
+      placeholder: "v0.9.0 or git SHA"
+    validations:
+      required: true
+  - type: input
+    id: bun
+    attributes:
+      label: Bun version
+      placeholder: "bun --version"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - scan / cache
+        - API
+        - web UI
+        - redaction / auth / bind
+        - docs
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Extra context
+      description: Logs (redacted), related PRs, whether OPENCODE_DB is non-default. No secrets.

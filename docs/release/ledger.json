@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "version": "0.9.0",
+      "tag": "v0.9.0",
+      "date": "2026-07-26",
+      "notes": "docs/release/0.9.0.md"
+    }
+  ]
+}

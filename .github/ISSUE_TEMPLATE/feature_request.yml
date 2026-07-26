@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose a focused improvement to OpencodeView.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the **problem** first. Large work should wait for maintainer direction before a big PR.
+
+        OpencodeView stays local-first, read-only on `opencode.db`, and source-run. Requests that need hosted multi-tenant SaaS or writing the OpenCode DB are out of scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or missing today for local OpenCode operators?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed direction
+      description: Optional sketch. Alternatives welcome.
+    validations:
+      required: false
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Primary surface
+      options:
+        - scan / metrics
+        - API
+        - web UI
+        - security / privacy defaults
+        - docs / DX
+        - unsure
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints you already accept
+      options:
+        - label: Keeps source DB read-only
+        - label: Keeps local-first / no required cloud
+        - label: Does not claim official OpenCode affiliation

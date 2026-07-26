@@ -1,0 +1,24 @@
+pre-commit:
+  parallel: false
+  commands:
+    github-identity:
+      run: bun scripts/assert-github-identity.ts --git-only
+    release-harness-tests:
+      run: bun run test:release
+    release-validator:
+      run: bun run release:check
+    gitleaks-staged:
+      run: ${GITLEAKS_BIN:-gitleaks} git --pre-commit --staged . --config .gitleaks.toml --redact=100 --no-color --exit-code 1 --max-archive-depth=1 --max-decode-depth=5
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: bun scripts/validate-conventional-commit.ts {1}
+
+pre-push:
+  commands:
+    github-identity:
+      run: bun scripts/assert-github-identity.ts
+    local-gate:
+      run: bun run check
+

@@ -1,0 +1,52 @@
+{
+  "name": "opencodeview",
+  "version": "0.9.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only, project-first analytics over opencode.db",
+  "license": "Apache-2.0",
+  "homepage": "https://opencodeview.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/4i3n6/opencodeview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4i3n6/opencodeview/issues"
+  },
+  "scripts": {
+    "test": "bun run test:root && bun run test:web",
+    "test:root": "bun test src/*.test.ts scripts/*.test.ts",
+    "test:web": "cd web && bun run test",
+    "test:release": "bun test scripts/conventional-commit.test.ts scripts/validate-release.test.ts scripts/assert-github-identity.test.ts",
+    "typecheck": "bun run typecheck:root && bun run typecheck:web",
+    "typecheck:root": "web/node_modules/.bin/tsc -p tsconfig.json --noEmit",
+    "typecheck:web": "cd web && bun run typecheck",
+    "lint": "bun run lint:root && bun run lint:web",
+    "lint:root": "web/node_modules/.bin/oxlint src scripts",
+    "lint:web": "cd web && bun run lint",
+    "build": "cd web && bun run build",
+    "audit": "bun run audit:dependencies && bun run audit:release && bun run audit:gitleaks",
+    "audit:dependencies": "bun audit && cd web && bun audit",
+    "audit:release": "bun run validate:release",
+    "audit:gitleaks": "${GITLEAKS_BIN:-gitleaks} dir . --config .gitleaks.toml --redact=100 --no-color --exit-code 1 --max-archive-depth=1 --max-decode-depth=5 --report-format json --report-path gitleaks-report.json",
+    "validate:commit": "bun scripts/validate-conventional-commit.ts",
+    "validate:identity": "bun scripts/assert-github-identity.ts",
+    "validate:release": "bun scripts/validate-release.ts 0.9.0",
+    "release:check": "bun run test:release && bun run validate:release",
+    "check": "bun run test && bun run typecheck && bun run lint && bun run build && bun run audit",
+    "scan": "bun src/scan.ts",
+    "scan:all": "bun src/scan.ts --all",
+    "projects": "bun src/scan.ts --list",
+    "serve": "bun src/server.ts",
+    "web": "cd web && bun run dev"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14"
+  },
+  "dependencies": {
+    "hono": "^4.12.28"
+  }
+}

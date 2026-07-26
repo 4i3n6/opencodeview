@@ -1,0 +1,18 @@
+title = "OpencodeView Gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Repository-local generated paths and synthetic TESTFIXTURE secrets used only in unit tests"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)web/node_modules/''',
+  '''(^|/)web/dist/''',
+  '''(^|/)\.cache/''',
+  '''(^|/)\.playwright-mcp/''',
+  '''(^|/)gitleaks-report\.json$''',
+]
+regexes = [
+  '''(?i)TESTFIXTURE''',
+]

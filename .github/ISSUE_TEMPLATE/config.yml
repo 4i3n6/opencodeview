@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report (private)
+    url: https://github.com/4i3n6/opencodeview/security/advisories/new
+    about: Vulnerabilities must not be filed as public issues.
+  - name: OpenCode upstream
+    url: https://github.com/anomalyco/opencode
+    about: Bugs in the OpenCode runtime or opencode.db itself belong upstream when possible.

@@ -1,0 +1,52 @@
+name: Question (incl. OpenCode maintainers)
+description: Collaborative technical question about integration, schema, or design.
+title: "q: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for good-faith technical discussion — including visitors from the OpenCode ecosystem.
+
+        Tone: collaborative. OpencodeView is an independent companion; OpenCode owns the runtime and `opencode.db`. We are happy to align on facts and correct assumptions.
+  - type: dropdown
+    id: audience
+    attributes:
+      label: You are mainly
+      options:
+        - OpencodeView user / contributor
+        - OpenCode maintainer or core contributor
+        - Other upstream / tooling author
+        - Just reading along
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to understand or verify?
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Precise question. Link code, schema notes, or commits when useful.
+    validations:
+      required: true
+  - type: textarea
+    id: assumptions
+    attributes:
+      label: Current assumptions
+      description: What you believe is true today (so we can correct gently if wrong).
+      placeholder: |
+        e.g. "session_metrics.active_min is derived only from message timestamps"
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This is about OpencodeView behavior or docs
+        - label: This may actually belong upstream in OpenCode (I am fine being redirected)
