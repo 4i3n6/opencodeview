@@ -40,19 +40,19 @@ export function evaluateGithubIdentity(
   const ghLogin = input.ghLogin === null ? null : normalize(input.ghLogin);
   const remoteUrl = input.remoteUrl === null ? null : normalize(input.remoteUrl);
 
+  // Never echo non-canonical account names, emails, or remote URLs in messages.
+  // Wrong local logins must not appear in hooks, CI logs, or shared terminals.
   if (gitUserName !== CANONICAL_GIT_NAME) {
-    errors.push(
-      `git user.name must be "${CANONICAL_GIT_NAME}" (got "${gitUserName || "<empty>"}")`,
-    );
+    errors.push(`git user.name must be "${CANONICAL_GIT_NAME}" (got a non-canonical value)`);
   }
   if (gitUserEmail !== CANONICAL_GIT_EMAIL) {
-    errors.push(
-      `git user.email must be "${CANONICAL_GIT_EMAIL}" (got "${gitUserEmail || "<empty>"}")`,
-    );
+    errors.push(`git user.email must be "${CANONICAL_GIT_EMAIL}" (got a non-canonical value)`);
   }
   if (requireGh && ghLogin !== CANONICAL_GITHUB_USER) {
     errors.push(
-      `active gh account must be "${CANONICAL_GITHUB_USER}" (got "${ghLogin ?? "<unavailable>"}")`,
+      ghLogin === null || ghLogin.length === 0
+        ? `active gh account must be "${CANONICAL_GITHUB_USER}" (got <unavailable>)`
+        : `active gh account must be "${CANONICAL_GITHUB_USER}" (got a non-canonical account)`,
     );
   }
   if (requireRemote) {
@@ -60,12 +60,12 @@ export function evaluateGithubIdentity(
       errors.push(`git remote origin must be set to ${CANONICAL_REMOTE_URL}`);
     } else if (!remoteUrlIncludesCanonicalOwner(remoteUrl)) {
       errors.push(
-        `git remote origin must point at github.com/${CANONICAL_GITHUB_USER}/opencodeview (got "${remoteUrl}")`,
+        `git remote origin must point at github.com/${CANONICAL_GITHUB_USER}/opencodeview (got a non-canonical remote)`,
       );
     }
   } else if (remoteUrl !== null && remoteUrl.length > 0 && !remoteUrlIncludesCanonicalOwner(remoteUrl)) {
     errors.push(
-      `git remote origin must point at github.com/${CANONICAL_GITHUB_USER}/opencodeview (got "${remoteUrl}")`,
+      `git remote origin must point at github.com/${CANONICAL_GITHUB_USER}/opencodeview (got a non-canonical remote)`,
     );
   }
 
@@ -188,13 +188,15 @@ if (import.meta.main) {
     process.exit(1);
   }
 
-  const ghPart = result.identity.ghLogin ? ` gh=${result.identity.ghLogin}` : "";
-  console.log(
-    `identity ok: git=${result.identity.gitUserName} <${result.identity.gitUserEmail}>${ghPart}`,
-  );
-  if (result.identity.remoteUrl) {
+  // Success output only reports the canonical public identity. Never print a
+  // non-canonical gh login (e.g. a personal account active on the machine).
+  console.log(`identity ok: git=${CANONICAL_GIT_NAME} <${CANONICAL_GIT_EMAIL}>`);
+  if (options.requireGh !== false) {
+    console.log(`gh=${CANONICAL_GITHUB_USER}`);
+  }
+  if (result.identity.remoteUrl && remoteUrlIncludesCanonicalOwner(result.identity.remoteUrl)) {
     console.log(`remote origin: ${result.identity.remoteUrl}`);
-  } else {
+  } else if (!result.identity.remoteUrl) {
     console.log("remote origin: (not configured yet)");
   }
 }

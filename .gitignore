@@ -1,21 +1,61 @@
+# --- dependencies & build ---
 node_modules/
 web/node_modules/
-.cache/
 web/dist/
+coverage/
+*.tsbuildinfo
+
+# --- runtime data (never publish) ---
+.cache/
 *.log
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# --- secrets / env ---
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets/
+.secrets/
+
+# --- editor / OS ---
 .DS_Store
 .idea/
 .vscode/
-coverage/
-*.tsbuildinfo
+*.swp
+*~
+
+# --- local agent / harness stack (never publish) ---
+# Private operator instructions for this machine
+AGENTS.md
+AGENTS.local.md
+*.local.md
+CLAUDE.md
+.claude/
+.cursor/
+.codex/
+.opencode/
+.agents/
+# Oh-My-OpenCode / local agent state
 .omo/
 .playwright-mcp/
+# Codegraph index — often a symlink into $HOME (absolute path leak)
+.codegraph
+.codegraph/
+# Local hook overrides
+lefthook-local.yml
+lefthook-local.yaml
+# Local release / gate overrides
+.release.local.json
+.gitleaks.local.toml
+
+# --- security scan artifacts ---
 gitleaks-report.json
-# Local-only agent ops — never publish
-AGENTS.md
+gitleaks-report.*
+*.sarif

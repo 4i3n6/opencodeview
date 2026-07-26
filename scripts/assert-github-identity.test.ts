@@ -46,7 +46,7 @@ describe("evaluateGithubIdentity", () => {
     }
   });
 
-  test("fails when the active gh account is not 4i3n6", () => {
+  test("fails when the active gh account is not 4i3n6 without echoing it", () => {
     const result = evaluateGithubIdentity({
       gitUserName: CANONICAL_GIT_NAME,
       gitUserEmail: CANONICAL_GIT_EMAIL,
@@ -57,6 +57,7 @@ describe("evaluateGithubIdentity", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.errors.some((error) => error.includes("active gh account"))).toBe(true);
+      expect(result.errors.join("\n")).not.toContain("other-user");
     }
   });
 
@@ -74,7 +75,7 @@ describe("evaluateGithubIdentity", () => {
     expect(result.ok).toBe(true);
   });
 
-  test("fails when origin points at another owner", () => {
+  test("fails when origin points at another owner without echoing the URL", () => {
     const result = evaluateGithubIdentity({
       gitUserName: CANONICAL_GIT_NAME,
       gitUserEmail: CANONICAL_GIT_EMAIL,
@@ -85,6 +86,7 @@ describe("evaluateGithubIdentity", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.errors.some((error) => error.includes("remote origin"))).toBe(true);
+      expect(result.errors.join("\n")).not.toContain("other-owner");
     }
   });
 });
