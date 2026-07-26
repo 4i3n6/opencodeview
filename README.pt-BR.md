@@ -14,9 +14,20 @@ Site: <https://opencodeview.com>
 
 **v0.9.0 é source-only.** Clone e rode com Bun. Sem pacote npm, binário, container ou instalador. Trate APIs, schema de cache, flags de CLI e env vars como instáveis até o `1.0.0`.
 
-![Visão geral do dashboard OpencodeView (dados sintéticos)](docs/images/dashboard-overview.png)
+### Preview da UI (dados sintéticos de amostra)
 
-<p align="center"><sub>Preview sintético para documentação — não são dados reais de usuário.</sub></p>
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/preview-live.png" alt="Árvore Live com painéis de saúde e atenção (sintético)" /></td>
+    <td width="50%"><img src="docs/images/preview-overview.png" alt="Visão geral com rollups por projeto (sintético)" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/preview-efficiency.png" alt="Eficiência: mix de modelos e tabela de agentes (sintético)" /></td>
+    <td width="50%"><img src="docs/images/preview-orchestration.png" alt="Orquestração: roteamento e árvore de delegação (sintético)" /></td>
+  </tr>
+</table>
+
+<p align="center"><sub>Previews sintéticos para documentação — não são dados reais de usuário. Projetos, sessões e métricas são fabricados.</sub></p>
 
 Mapa detalhado: [docs/ARCHITECTURE.pt-BR.md](docs/ARCHITECTURE.pt-BR.md) · [English](docs/ARCHITECTURE.md)
 

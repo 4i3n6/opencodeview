@@ -14,9 +14,20 @@ Site: <https://opencodeview.com>
 
 **v0.9.0 is source-only.** Clone and run with Bun. No npm package, binary, container, or installer. Treat APIs, cache schema, CLI flags, and env vars as unstable until `1.0.0`.
 
-![OpencodeView dashboard overview (synthetic sample data)](docs/images/dashboard-overview.png)
+### UI preview (synthetic sample data)
 
-<p align="center"><sub>Synthetic preview for documentation — not live user data.</sub></p>
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/preview-live.png" alt="Live session tree with health and attention panels (synthetic)" /></td>
+    <td width="50%"><img src="docs/images/preview-overview.png" alt="Overview project rollups (synthetic)" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/preview-efficiency.png" alt="Efficiency model mix and agent table (synthetic)" /></td>
+    <td width="50%"><img src="docs/images/preview-orchestration.png" alt="Orchestration routing and delegation tree (synthetic)" /></td>
+  </tr>
+</table>
+
+<p align="center"><sub>Synthetic documentation previews — not live user data. Projects, sessions, and metrics are fabricated.</sub></p>
 
 Deeper map: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [Português](docs/ARCHITECTURE.pt-BR.md)
 
