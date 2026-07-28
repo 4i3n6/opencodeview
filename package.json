@@ -38,7 +38,9 @@
     "scan:all": "bun src/scan.ts --all",
     "projects": "bun src/scan.ts --list",
     "serve": "bun src/server.ts",
-    "web": "cd web && bun run dev"
+    "serve:tailscale": "bun scripts/serve-tailscale.ts",
+    "web": "cd web && bun run dev",
+    "web:tailscale": "bun scripts/serve-tailscale.ts --with-web"
   },
   "engines": {
     "bun": ">=1.3.0"

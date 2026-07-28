@@ -154,11 +154,12 @@ Heuristic labels on cached sessions. IDs are stable protocol strings (not transl
 
 - Bind: `OPENCODEVIEW_HOST` default `127.0.0.1` (also `localhost` / `::1`). Host/Origin guards on loopback.
 - Beyond loopback: `OPENCODEVIEW_AUTH_TOKEN` required or startup fails. `/api/*` expects `Authorization: Bearer <token>`.
+- Optional Tailscale: `bun run serve:tailscale` (or `web:tailscale`) probes the local Tailscale CLI. If the tailnet is up, the API binds to the Tailscale IPv4 and requires a bearer token (auto-written to gitignored `.cache/tailscale-auth-token` when unset). If Tailscale is down, it stays on loopback.
 - Redaction (`src/redaction.ts`): secret-like keys, bearer tokens, common provider prefixes (`sk-`, `ghp-`, …), URL userinfo, absolute home paths → `[REDACTED]`.
 - API responses: `Cache-Control: no-store`.
 - No telemetry / no outbound network from the app itself.
 
-Exposing past loopback is an operator choice. Review redaction against your own data first.
+Exposing past loopback is an operator choice. Review redaction against your own data first. Prefer Tailscale over raw LAN bind.
 
 ## Environment
 
@@ -168,6 +169,7 @@ Exposing past loopback is an operator choice. Review redaction against your own 
 | `OPENCODEVIEW_CACHE` | `<repo>/.cache/analytics.sqlite` | Derived cache |
 | `OPENCODEVIEW_HOST` | `127.0.0.1` | API bind; non-loopback needs auth token |
 | `OPENCODEVIEW_AUTH_TOKEN` | unset | Bearer for non-loopback `/api/*` |
+| `OPENCODEVIEW_TAILSCALE` | `off` | `off` \| `auto` \| `on` — auto-bind to Tailscale IPv4 when the CLI reports Running |
 | `PORT` | `4317` | API port |
 | `OH_MY_OPENCODE_LOG` | `$TMPDIR/oh-my-opencode.log` | Optional live activity tail |
 
@@ -179,7 +181,9 @@ Exposing past loopback is an operator choice. Review redaction against your own 
 | `bun src/scan.ts <project>` | Scan one project into cache |
 | `bun src/scan.ts --all` | Scan everything |
 | `bun run serve` | API on `127.0.0.1:4317` |
+| `bun run serve:tailscale` | API; binds Tailscale IPv4 + bearer auth when tailnet is up |
 | `bun run web` | UI on `127.0.0.1:5273` |
+| `bun run web:tailscale` | API + UI on Tailscale IPv4 when available |
 | `bun run check` | Full gate: test, typecheck, lint, build, audit, Gitleaks |
 | `bun run release:check` | Release harness only |
 

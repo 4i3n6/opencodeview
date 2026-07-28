@@ -7,7 +7,7 @@ import { Hono, type Context, type Next } from "hono";
 import { assertDistinctDbPaths } from "./db-paths.ts";
 import { parseBoundedInt } from "./http-query.ts";
 import { redactText, redactValue } from "./redaction.ts";
-import { createServerConfig, requiresAuth } from "./server-config.ts";
+import { createServerConfig, isAllowedRequestHost, isLoopback, requiresAuth } from "./server-config.ts";
 import { percentile, wilson } from "./stats.ts";
 
 const CONFIG = createServerConfig();
@@ -40,16 +40,16 @@ function loopbackHostName(raw: string): string {
   return colonCount === 1 ? host.slice(0, host.indexOf(":")) : host;
 }
 
-function isLoopbackHost(raw: string | null | undefined): boolean {
-  if (!raw) return false;
-  const hostname = loopbackHostName(raw);
-  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+function requestHostName(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  return loopbackHostName(raw);
 }
 
-function isLoopbackOrigin(raw: string | null | undefined): boolean {
+function isAllowedOrigin(raw: string | null | undefined): boolean {
   if (!raw) return true;
   try {
-    return isLoopbackHost(new URL(raw).host);
+    const host = new URL(raw).hostname.toLowerCase();
+    return isAllowedRequestHost(CONFIG, host);
   } catch (error) {
     if (error instanceof TypeError) return false;
     throw error;
@@ -57,13 +57,16 @@ function isLoopbackOrigin(raw: string | null | undefined): boolean {
 }
 
 app.use("/api/*", async (c: Context, next: Next) => {
+  // Non-loopback binds already require a bearer token (requiresAuth). When the
+  // process is on loopback but Tailscale Serve/MagicDNS is enabled, Host/Origin
+  // may be a tailnet name — allow only those plus loopback.
   if (!requiresAuth(CONFIG)) {
-    const requestHost = c.req.header("Host") ?? new URL(c.req.url).host;
-    if (!isLoopbackHost(requestHost)) {
-      return c.json({ error: { code: "FORBIDDEN", message: "Loopback host required." } }, 403);
+    const requestHost = requestHostName(c.req.header("Host") ?? new URL(c.req.url).host);
+    if (!requestHost || !isAllowedRequestHost(CONFIG, requestHost)) {
+      return c.json({ error: { code: "FORBIDDEN", message: "Host not allowed." } }, 403);
     }
-    if (!isLoopbackOrigin(c.req.header("Origin"))) {
-      return c.json({ error: { code: "FORBIDDEN", message: "Loopback origin required." } }, 403);
+    if (!isAllowedOrigin(c.req.header("Origin"))) {
+      return c.json({ error: { code: "FORBIDDEN", message: "Origin not allowed." } }, 403);
     }
   }
   return next();
@@ -1745,5 +1748,15 @@ app.get("/api/live", (c) => {
   return c.json({ generated_at: now, since_min: sinceMin, nodes });
 });
 
-console.log(`OpencodeView API at http://${CONFIG.hostname}:${PORT} (cache/source paths hidden, redaction=enabled)`);
+const authNote = requiresAuth(CONFIG) ? "auth=bearer" : isLoopback(CONFIG.hostname) ? "auth=loopback" : "auth=on";
+const ts = CONFIG.tailscale;
+const tsNote =
+  ts?.available && ts.dnsName
+    ? ` tailscale=${ts.dnsName}`
+    : ts?.available && ts.ipv4
+      ? ` tailscale=${ts.ipv4}`
+      : "";
+console.log(
+  `OpencodeView API at http://${CONFIG.hostname}:${PORT} (${authNote}${tsNote}; cache/source paths hidden, redaction=enabled)`,
+);
 export default { port: PORT, hostname: CONFIG.hostname, fetch: app.fetch };

@@ -154,11 +154,12 @@ Rótulos heurísticos em sessões no cache. IDs são strings de protocolo estáv
 
 - Bind: `OPENCODEVIEW_HOST` default `127.0.0.1` (também `localhost` / `::1`). Guards de Host/Origin no loopback.
 - Fora do loopback: `OPENCODEVIEW_AUTH_TOKEN` obrigatório ou o startup falha. `/api/*` espera `Authorization: Bearer <token>`.
+- Tailscale opcional: `bun run serve:tailscale` (ou `web:tailscale`) consulta o CLI local. Se a tailnet estiver up, a API faz bind no IPv4 do Tailscale e exige bearer (gerado em `.cache/tailscale-auth-token` gitignored se não houver env). Se o Tailscale estiver down, permanece em loopback.
 - Redação (`src/redaction.ts`): chaves de segredo, bearer, prefixos comuns (`sk-`, `ghp-`, …), userinfo em URL, paths absolutos de home → `[REDACTED]`.
 - Respostas da API: `Cache-Control: no-store`.
 - Sem telemetria / sem rede de saída própria do app.
 
-Expor além do loopback é escolha do operador. Revise a redação contra os seus dados antes.
+Expor além do loopback é escolha do operador. Revise a redação contra os seus dados antes. Prefira Tailscale a bind cru na LAN.
 
 ## Ambiente
 
@@ -168,6 +169,7 @@ Expor além do loopback é escolha do operador. Revise a redação contra os seu
 | `OPENCODEVIEW_CACHE` | `<repo>/.cache/analytics.sqlite` | Cache derivado |
 | `OPENCODEVIEW_HOST` | `127.0.0.1` | Bind da API; fora de loopback exige token |
 | `OPENCODEVIEW_AUTH_TOKEN` | unset | Bearer para `/api/*` fora de loopback |
+| `OPENCODEVIEW_TAILSCALE` | `off` | `off` \| `auto` \| `on` — bind automático no IPv4 Tailscale quando o CLI reporta Running |
 | `PORT` | `4317` | Porta da API |
 | `OH_MY_OPENCODE_LOG` | `$TMPDIR/oh-my-opencode.log` | Tail opcional de atividade live |
 
@@ -179,7 +181,9 @@ Expor além do loopback é escolha do operador. Revise a redação contra os seu
 | `bun src/scan.ts <projeto>` | Escaneia um projeto no cache |
 | `bun src/scan.ts --all` | Escaneia tudo |
 | `bun run serve` | API em `127.0.0.1:4317` |
+| `bun run serve:tailscale` | API; bind no IPv4 Tailscale + bearer quando a tailnet está up |
 | `bun run web` | UI em `127.0.0.1:5273` |
+| `bun run web:tailscale` | API + UI no IPv4 Tailscale quando disponível |
 | `bun run check` | Gate completo: test, typecheck, lint, build, audit, Gitleaks |
 | `bun run release:check` | Só o harness de release |
 
