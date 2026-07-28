@@ -11,11 +11,11 @@ export default defineConfig({
     },
   },
   server: {
-    host: process.env.VITE_HOST ?? "127.0.0.1",
-    port: Number(process.env.WEB_PORT ?? 5273),
+    host: process.env["VITE_HOST"] ?? "127.0.0.1",
+    port: Number(process.env["WEB_PORT"] ?? 5273),
     strictPort: true,
     proxy: {
-      "/api": process.env.VITE_API_PROXY ?? "http://127.0.0.1:4317",
+      "/api": process.env["VITE_API_PROXY"] ?? "http://127.0.0.1:4317",
     },
   },
 });
